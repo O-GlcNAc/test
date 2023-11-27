@@ -39,6 +39,12 @@ int main(int argc, char **argv) {
                 printf("Failed to execute Python script.\n");
                 return -1;
             }
+            char result_buffer[1024]; // 출력 결과를 담을 버퍼
+
+            while (fgets(result_buffer, sizeof(result_buffer), fp) != NULL) {
+                printf("%s", result_buffer); // 파이썬 스크립트의 출력 결과를 터미널에 출력
+            }
+
             pclose(fp);
         }
     }
