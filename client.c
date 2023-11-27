@@ -6,30 +6,32 @@
 
 #define FIFOFILE "fifo"
 
-int main(int argc, char **argv)
-{
-    int n, fd;
-    char buf[BUFSIZ];
+int main(int argc, char **argv) {
+    int fd;
+    srand(time(NULL)); // 난수 생성을 위한 시드 설정
 
-    if((fd = open(FIFOFILE, O_WRONLY)) < 0) { 		/* FIFO를 연다. */
+    if ((fd = open(FIFOFILE, O_WRONLY)) < 0) { // FIFO를 쓰기 전용으로 열기
         perror("open()");
         return -1;
     }
 
     while (1) {
-        // 랜덤 텍스트 생성
-        for (int i = 0; i < BUFSIZ; ++i) {
-            buf[i] = 'A' + rand() % 26; // 랜덤 알파벳 생성
+        int sensor_id = rand() % 3 + 1; // 1에서 3 사이의 랜덤 sensor_id 생성
+        int reading;
+        if (sensor_id == 1) {
+            reading = rand() % 61 - 20; // sensor_id 1의 reading은 -20에서 40 사이 값
+        } else if (sensor_id == 2) {
+            reading = rand() % 101; // sensor_id 2의 reading은 0에서 100 사이 값
+        } else {
+            reading = rand() % 21; // sensor_id 3의 reading은 0에서 20 사이 값
         }
-        buf[BUFSIZ] = '\0'; // 문자열 종료
 
-        // FIFO로 데이터 보내기
-        write(fd, buf, BUFSIZ);
+        // FIFO로 sensor_id와 reading 데이터 전송
+        dprintf(fd, "%d %d\n", sensor_id, reading);
 
-        fflush(stdout); // 표준 출력 버퍼 비우기
-
-        sleep(2); // 2초 대기
+        sleep(1); // 1초 대기
     }
 
+    close(fd);
     return 0;
 }
