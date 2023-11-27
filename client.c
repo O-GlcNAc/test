@@ -21,10 +21,12 @@ int main(int argc, char **argv)
         for (int i = 0; i < 3; ++i) {
             buf[i] = 'A' + rand() % 26; // 랜덤 알파벳 생성
         }
-        buf[BUFSIZ - 1] = '\0'; // 문자열 종료
+        buf[3] = '\0'; // 문자열 종료
 
         // FIFO로 데이터 보내기
         write(fd, buf, BUFSIZ);
+
+        fflush(stdout); // 표준 출력 버퍼 비우기
 
         sleep(1); // 1초 대기
     }
