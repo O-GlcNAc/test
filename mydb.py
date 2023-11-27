@@ -27,19 +27,19 @@ with open('fifo', 'r') as fifo_file:
             sql = "INSERT INTO SensorData (sensor_id, reading, timestamp) VALUES (%s, %s, CURRENT_TIMESTAMP)"
             cursor.execute(sql, (sensor_id, reading))
 
-            # Get the last 3 sensor readings for the current sensor_id
-            sql_last_readings = "SELECT sensor_id FROM SensorData ORDER BY timestamp DESC LIMIT 3"
-            cursor.execute(sql_last_readings)
+            # Get the last sensor readings for the current sensor_id
+            sql_last_readings = "SELECT sensor_id FROM SensorData WHERE sensor_id = %s ORDER BY timestamp DESC LIMIT 10"
+            cursor.execute(sql_last_readings, (sensor_id,))
             last_readings = [row['sensor_id'] for row in cursor.fetchall()]
 
             # Check if the current sensor_id has appeared 3 times non-sequentially
-            if last_readings.count(sensor_id) < 3:
-                # Update SensorStatus table to disable the sensor_id
-                sql_update = "UPDATE SensorStatus SET status = 'disable', timestamp = CURRENT_TIMESTAMP WHERE sensor_id = %s"
-                cursor.execute(sql_update, (sensor_id,))
-            else:
+            if len(last_readings) < 10 or last_readings.count(sensor_id) > 2:
                 # Update SensorStatus table to set the sensor_id as 'available'
                 sql_update = "UPDATE SensorStatus SET status = 'available', timestamp = CURRENT_TIMESTAMP WHERE sensor_id = %s"
+                cursor.execute(sql_update, (sensor_id,))
+            else:
+                # Update SensorStatus table to disable the sensor_id
+                sql_update = "UPDATE SensorStatus SET status = 'disable', timestamp = CURRENT_TIMESTAMP WHERE sensor_id = %s"
                 cursor.execute(sql_update, (sensor_id,))
 
         # Commit the changes to the database
