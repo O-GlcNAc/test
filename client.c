@@ -18,7 +18,7 @@ int main(int argc, char **argv)
 
     while (1) {
         // 랜덤 텍스트 생성
-        for (int i = 0; i < BUFSIZ - 1; ++i) {
+        for (int i = 0; i < 3; ++i) {
             buf[i] = 'A' + rand() % 26; // 랜덤 알파벳 생성
         }
         buf[BUFSIZ - 1] = '\0'; // 문자열 종료
