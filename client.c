@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <stdlib.h>
+#include <time.h>
 
 #define FIFOFILE "fifo"
 
@@ -14,10 +16,18 @@ int main(int argc, char **argv)
         return -1;
     }
 
-    while ((n = read(0, buf, sizeof(buf))) > 0) 	/* 키보드로부터 데이터를 입력받는다 */
-        write(fd, buf, n); 				/* FIFO로 데이터를 보낸다. */
+    while (1) {
+        // 랜덤 텍스트 생성
+        for (int i = 0; i < BUFSIZ - 1; ++i) {
+            buf[i] = 'A' + rand() % 26; // 랜덤 알파벳 생성
+        }
+        buf[BUFSIZ - 1] = '\0'; // 문자열 종료
 
-    close(fd);
+        // FIFO로 데이터 보내기
+        write(fd, buf, BUFSIZ);
+
+        sleep(1); // 1초 대기
+    }
 
     return 0;
 }
