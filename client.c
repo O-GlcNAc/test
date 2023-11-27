@@ -16,7 +16,7 @@ int main(int argc, char **argv) {
     }
 
     while (1) {
-        int sensor_id = rand() % 3 + 1; // 1에서 3 사이의 랜덤 sensor_id 생성
+        int sensor_id = rand() % 2 + 1; // 1에서 3 사이의 랜덤 sensor_id 생성
         int reading;
         if (sensor_id == 1) {
             reading = rand() % 61 - 20; // sensor_id 1의 reading은 -20에서 40 사이 값
