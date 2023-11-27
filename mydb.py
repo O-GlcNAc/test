@@ -26,16 +26,13 @@ with open('fifo', 'r') as fifo_file:
             sql = "INSERT INTO SensorData (sensor_id, reading, timestamp) VALUES (%s, %s, CURRENT_TIMESTAMP)"
             cursor.execute(sql, (sensor_id, reading))
 
-            # Get the recent 10 sensor readings
-            sql_last_readings = "SELECT sensor_id FROM SensorData ORDER BY timestamp DESC LIMIT 10"
+            # Get the counts of each sensor_id in the last 10 readings
+            sql_last_readings = "SELECT sensor_id, COUNT(*) as count FROM SensorData GROUP BY sensor_id ORDER BY timestamp DESC LIMIT 10"
             cursor.execute(sql_last_readings)
-            last_readings = [row['sensor_id'] for row in cursor.fetchall()]
-
-            # Count occurrences of sensor_id in the last 10 readings
-            id_counts = {id: last_readings.count(id) for id in set(last_readings)}
+            sensor_counts = {row['sensor_id']: row['count'] for row in cursor.fetchall()}
 
             # Check if the current sensor_id has appeared 2 or fewer times in the last 10 readings
-            if id_counts.get(sensor_id, 0) <= 2:
+            if sensor_counts.get(sensor_id, 0) <= 2:
                 # Update SensorStatus table to set the sensor_id as 'disable'
                 sql_update = "UPDATE SensorStatus SET status = 'disable', timestamp = CURRENT_TIMESTAMP WHERE sensor_id = %s"
                 cursor.execute(sql_update, (sensor_id,))
