@@ -20,25 +20,23 @@ with open('fifo', 'r') as fifo_file:
             continue
 
         sensor_id, reading = parse_sensor_data(line)  # Parse the received data
-        timestamp = None  # Since the timestamp is automatically added, no need to specify here
 
         with connection.cursor() as cursor:
             # Insert the parsed data into SensorData table
             sql = "INSERT INTO SensorData (sensor_id, reading, timestamp) VALUES (%s, %s, CURRENT_TIMESTAMP)"
             cursor.execute(sql, (sensor_id, reading))
 
-            # Get the last sensor readings for the current sensor_id
-            sql_last_readings = "SELECT sensor_id FROM SensorData WHERE sensor_id = %s ORDER BY timestamp DESC LIMIT 10"
-            cursor.execute(sql_last_readings, (sensor_id,))
+            # Get the recent 10 sensor readings
+            sql_last_readings = "SELECT sensor_id FROM SensorData ORDER BY timestamp DESC LIMIT 10"
+            cursor.execute(sql_last_readings)
             last_readings = [row['sensor_id'] for row in cursor.fetchall()]
 
-            # Check if the current sensor_id has appeared 3 times non-sequentially
-            if len(last_readings) < 10 or last_readings.count(sensor_id) > 2:
-                # Update SensorStatus table to set the sensor_id as 'available'
-                sql_update = "UPDATE SensorStatus SET status = 'available', timestamp = CURRENT_TIMESTAMP WHERE sensor_id = %s"
-                cursor.execute(sql_update, (sensor_id,))
-            else:
-                # Update SensorStatus table to disable the sensor_id
+            # Count occurrences of sensor_id in the last 10 readings
+            id_counts = {id: last_readings.count(id) for id in set(last_readings)}
+
+            # Check if the current sensor_id has appeared 2 or fewer times in the last 10 readings
+            if id_counts.get(sensor_id, 0) <= 2:
+                # Update SensorStatus table to set the sensor_id as 'disable'
                 sql_update = "UPDATE SensorStatus SET status = 'disable', timestamp = CURRENT_TIMESTAMP WHERE sensor_id = %s"
                 cursor.execute(sql_update, (sensor_id,))
 
