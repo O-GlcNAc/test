@@ -7,10 +7,12 @@ conn = pymysql.connect(
     password='tiger',  # root 계정의 비밀번호를 입력하세요.
 )
 
+
 # 커서 생성
 cursor = conn.cursor()
 
 # exam 데이터베이스 생성
+cursor.execute("GRANT ALL PRIVILEGES ON exam.* TO 'scott'@'localhost'")
 cursor.execute("CREATE DATABASE IF NOT EXISTS exam")
 print("exam 데이터베이스가 생성되었습니다.")
 
