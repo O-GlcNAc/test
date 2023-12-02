@@ -4,7 +4,7 @@ import pymysql
 conn = pymysql.connect(
     host='localhost',
     user='scott',  # root 계정으로 접속합니다. 적절한 권한을 가진 계정으로 변경하세요.
-    password='ptiger',  # root 계정의 비밀번호를 입력하세요.
+    password='tiger',  # root 계정의 비밀번호를 입력하세요.
     charset='utf8mb4'
 )
 
