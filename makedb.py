@@ -14,7 +14,7 @@ cursor = conn.cursor()
 # Sensors 테이블 생성
 cursor.execute("""
     CREATE TABLE IF NOT EXISTS Sensors (
-        id INTEGER PRIMARY KEY,
+        id INTEGER AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(30),
         location VARCHAR(50)
     )
@@ -47,6 +47,18 @@ cursor.execute("""
     )
 """)
 print("Sensorstatus 테이블이 생성되었습니다.")
+
+# Sensors 테이블에 데이터 추가
+sensor_values = [
+    ('Sensor1', 'Location1'),
+    ('Sensor2', 'Location2'),
+    ('Sensor3', 'Location3')
+]
+
+insert_query = "INSERT INTO Sensors (name, location) VALUES (%s, %s)"
+
+cursor.executemany(insert_query, sensor_values)
+print("데이터가 Sensors 테이블에 추가되었습니다.")
 
 # 커밋 및 연결 종료
 conn.commit()
