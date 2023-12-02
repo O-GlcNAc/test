@@ -3,8 +3,8 @@ import pymysql
 # MariaDB 연결 설정
 conn = pymysql.connect(
     host='localhost',
-    user='scott',
-    password='tiger',
+    user='root',  # root 계정으로 접속합니다. 적절한 권한을 가진 계정으로 변경하세요.
+    password='your_password',  # root 계정의 비밀번호를 입력하세요.
     charset='utf8mb4'
 )
 
@@ -54,6 +54,9 @@ cursor.execute("""
     )
 """)
 print("Sensorstatus 테이블이 생성되었습니다.")
+
+# 'scott' 사용자에게 'exam' 데이터베이스에 대한 권한 부여
+cursor.execute("GRANT ALL PRIVILEGES ON exam.* TO 'scott'@'localhost'")
 
 # 커밋 및 연결 종료
 conn.commit()
