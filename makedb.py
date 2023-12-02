@@ -1,13 +1,11 @@
-# 이때 mariadb서버는 켜져 있어야한다.
-
-
-import mysql.connector
+import pymysql
 
 # MariaDB 연결 설정
-conn = mysql.connector.connect(
+conn = pymysql.connect(
     host='localhost',
     user='scott',
-    password='tiger'
+    password='tiger',
+    charset='utf8mb4'
 )
 
 # 커서 생성
