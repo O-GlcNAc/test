@@ -6,7 +6,7 @@
 #include <errno.h> // 오류 메시지 출력을 위해 추가
 
 #define FIFOFILE "fifo"
-#define PYTHON_SCRIPT "/path/to/mydb.py" // 'mydb.py' 파일의 절대 경로로 변경
+#define PYTHON_SCRIPT "/home/minwoo/test/mydb.py" // 'mydb.py' 파일의 절대 경로로 변경
 
 int main(int argc, char **argv) {
     int fd;
