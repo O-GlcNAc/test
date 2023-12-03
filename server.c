@@ -5,7 +5,7 @@
 #include <string.h>
 
 #define FIFOFILE "fifo"
-#define PYTHON_SCRIPT "uploaddb.py" // 파이썬 스크립트 파일명
+#define PYTHON_SCRIPT "mydb.py" // 파이썬 스크립트 파일명
 
 int main(int argc, char **argv) {
     int fd;
