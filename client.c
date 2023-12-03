@@ -6,6 +6,9 @@
 
 #define FIFOFILE "fifo"
 
+int sensor_id, temperature, humidity, illuminance;
+
+
 int main(int argc, char **argv) {
     int fd;
     srand(time(NULL)); // 난수 생성을 위한 시드 설정
