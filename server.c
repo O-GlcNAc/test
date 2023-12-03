@@ -6,7 +6,7 @@
 #include <errno.h> // 오류 메시지 출력을 위해 추가
 
 #define FIFOFILE "fifo"
-#define PYTHON_SCRIPT "mydb.py" // 'mydb.py' 파일의 절대 경로로 변경
+#define PYTHON_SCRIPT "/path/to/mydb.py" // 'mydb.py' 파일의 절대 경로로 변경
 
 int main(int argc, char **argv) {
     int fd;
@@ -34,7 +34,7 @@ int main(int argc, char **argv) {
             buf[n] = '\0'; // Null-terminate 문자열
 
             // 파이썬 스크립트를 호출하여 FIFO로부터 받은 데이터를 전달하고 MariaDB에 데이터 삽입
-            sprintf(command, "python3 %s \"%s\"", PYTHON_SCRIPT, buf);
+            snprintf(command, sizeof(command), "python3 %s \"%s\"", PYTHON_SCRIPT, buf);
             fp = popen(command, "r"); // 쓰기 전용으로 파일 포인터 열기
             if (fp == NULL) {
                 printf("Failed to execute Python script: %s\n", strerror(errno)); // 오류 메시지 출력
@@ -46,7 +46,8 @@ int main(int argc, char **argv) {
             while (fgets(result_buffer, sizeof(result_buffer), fp) != NULL) {
                 printf("%s", result_buffer); // 파이썬 스크립트의 출력 결과를 터미널에 출력
             }
-               // 파이썬 스크립트의 실행 결과
+
+            // 파이썬 스크립트의 실행 결과
             printf("Data sent to Python script for database insertion.\n");
             pclose(fp); // 파일 포인터 닫기
         }
