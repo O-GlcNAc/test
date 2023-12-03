@@ -15,6 +15,8 @@ int main(int argc, char **argv) {
         return -1;
     }
 
+    time_t start_time = time(NULL); // 현재 시간을 시작 시간으로 설정
+
     while (1) {
         int sensor_id = rand() % 3 + 1; // 1에서 3 사이의 랜덤 sensor_id 생성
 
@@ -48,8 +50,8 @@ int main(int argc, char **argv) {
         // 3분 간격으로 데이터 전송
         usleep(180 * 1000000); // 180초를 마이크로초 단위로 변환
 
-        // 23년 12월 2일 00시까지의 데이터를 생성한 후 종료
-        if (current_time >= mktime(&start_time) + 86400) { // 86400초는 하루의 초 단위 값
+        // 시작 시간으로부터 1일(86400초) 이상 경과한 경우 종료
+        if (difftime(current_time, start_time) >= 86400) { // difftime 함수를 사용하여 경과 시간 계산
             break;
         }
     }
