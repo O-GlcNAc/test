@@ -50,9 +50,9 @@ print("Sensorstatus 테이블이 생성되었습니다.")
 
 # Sensors 테이블에 데이터 추가
 sensor_values = [
-    ('Sensor1', 'Location1'),
-    ('Sensor2', 'Location2'),
-    ('Sensor3', 'Location3')
+    ('Sensor1', 'carrot_area'),
+    ('Sensor2', 'lectuce_area'),
+    ('Sensor3', 'eggplant_area')
 ]
 
 insert_query = "INSERT INTO Sensors (name, location) VALUES (%s, %s)"
