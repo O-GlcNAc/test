@@ -30,7 +30,7 @@ cursor.execute("""
         timestamp TIMESTAMP,
         temperature FLOAT,
         humidity FLOAT,
-        light FLOAT,
+        illuminance FLOAT,
         FOREIGN KEY (sensor_id) REFERENCES Sensors(id)
     )
 """)
