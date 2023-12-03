@@ -25,6 +25,7 @@ int main(int argc, char **argv) {
     }
 
     FILE *fp;
+    char command[BUFSIZ];
 
     while (1) {
         int n = read(fd, buf, sizeof(buf)); // FIFO로부터 데이터를 읽음
