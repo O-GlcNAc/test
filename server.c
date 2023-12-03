@@ -24,7 +24,6 @@ int main(int argc, char **argv) {
     }
 
     FILE *fp;
-    char command[BUFSIZ];
 
     while (1) {
         int n = read(fd, buf, sizeof(buf)); // FIFO로부터 데이터를 읽음
@@ -33,19 +32,18 @@ int main(int argc, char **argv) {
             buf[n] = '\0'; // Null-terminate 문자열
 
             // 파이썬 스크립트를 호출하여 FIFO로부터 받은 데이터를 전달하고 MariaDB에 데이터 삽입
-            sprintf(command, "python3 %s \"%s\"", PYTHON_SCRIPT, buf);
-            fp = popen(command, "r");
+            fp = popen(PYTHON_SCRIPT, "w"); // 쓰기 전용으로 파일 포인터 열기
             if (fp == NULL) {
                 printf("Failed to execute Python script.\n");
                 return -1;
             }
-            char result_buffer[1024]; // 출력 결과를 담을 버퍼
 
-            while (fgets(result_buffer, sizeof(result_buffer), fp) != NULL) {
-                printf("%s", result_buffer); // 파이썬 스크립트의 출력 결과를 터미널에 출력
-            }
+            // FIFO로부터 받은 데이터를 파이썬 스크립트에 쓰기
+            fwrite(buf, sizeof(char), strlen(buf), fp);
+            fclose(fp); // 파일 포인터 닫기
 
-            pclose(fp);
+            // 파이썬 스크립트의 실행 결과는 터미널에서 직접 확인할 수 있도록 변경하였습니다.
+            printf("Data sent to Python script for database insertion.\n");
         }
     }
 
