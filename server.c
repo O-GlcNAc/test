@@ -34,18 +34,21 @@ int main(int argc, char **argv) {
             buf[n] = '\0'; // Null-terminate 문자열
 
             // 파이썬 스크립트를 호출하여 FIFO로부터 받은 데이터를 전달하고 MariaDB에 데이터 삽입
-            fp = popen(PYTHON_SCRIPT, "w"); // 쓰기 전용으로 파일 포인터 열기
+            sprintf(command, "python3 %s \"%s\"", PYTHON_SCRIPT, buf);
+            fp = popen(command, "r"); // 쓰기 전용으로 파일 포인터 열기
             if (fp == NULL) {
-                fprintf(stderr, "Failed to execute Python script: %s\n", strerror(errno)); // 오류 메시지 출력
+                printf("Failed to execute Python script: %s\n", strerror(errno)); // 오류 메시지 출력
                 return -1;
             }
 
-            // FIFO로부터 받은 데이터를 파이썬 스크립트에 쓰기
-            fwrite(buf, sizeof(char), strlen(buf), fp);
-            pclose(fp); // 파일 포인터 닫기
+            char result_buffer[1024]; 
 
-            // 파이썬 스크립트의 실행 결과는 터미널에서 직접 확인할 수 있도록 변경하였습니다.
+            while (fgets(result_buffer, sizeof(result_buffer), fp) != NULL) {
+                printf("%s", result_buffer); // 파이썬 스크립트의 출력 결과를 터미널에 출력
+            }
+               // 파이썬 스크립트의 실행 결과
             printf("Data sent to Python script for database insertion.\n");
+            pclose(fp); // 파일 포인터 닫기
         }
     }
 
